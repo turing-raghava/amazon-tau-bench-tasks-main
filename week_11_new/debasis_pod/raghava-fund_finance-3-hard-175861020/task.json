@@ -7,7 +7,14 @@
   "interface_num": 3,
   "task": {
     "user_id": "21",
+    #The instruction is incorrect. It should be like below, you must not mention -  "proceeding only upon explicit clearance from Mr. Clinton Hopkins, the authorized compliance approver for investor terminations"
+    #This is because, you need to find it using action validate_approval
+
+    #Instruction rewrite - 
+    #You are Lydia Trujillo (lydia.trujillo@gmail.com), a fund manager. You want to commence the formal offboarding of the investor Martinez, Rose and Jackson following substantiated findings of fraudulent conduct.
     "instruction": "You are instructed, in your capacity as Fund Manager, to commence the formal offboarding of the investor Martinez, Rose and Jackson following substantiated findings of fraudulent conduct. Proceed solely upon explicit clearance from Mr. Clinton Hopkins, the authorized compliance approver for investor terminations.",
+    
+    #There is no output for any action, you should generate output, this will help me to validate the task properly. 
     "actions": [
       {
         "name": "find_user_entities",
