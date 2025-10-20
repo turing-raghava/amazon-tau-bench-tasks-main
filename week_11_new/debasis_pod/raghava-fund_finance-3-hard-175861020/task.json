@@ -7,7 +7,7 @@
   "interface_num": 3,
   "task": {
     "user_id": "21",
-    "instruction": "You are instructed, in your capacity as Fund Manager, to commence the formal offboarding of the investor Martinez, Rose and Jackson following substantiated findings of fraudulent conduct. Proceed solely upon explicit clearance from Mr. Clinton Hopkins, the authorized compliance approver for investor terminations.",
+    "instruction": "You are Lydia Trujillo (lydia.trujillo@gmail.com), a fund manager. You initiate the formal offboarding of the investor “Martinez, Rose and Jackson” on the basis of substantiated fraudulent conduct. Before executing any irreversible steps, determine authorization using the validate_approval action and proceed only if authorization is confirmed. If authorized, cancel all active subscriptions for this investor and record each operation in the audit trail for compliance.",
     "actions": [
       {
         "name": "find_user_entities",
@@ -18,8 +18,26 @@
             "role": "fund_manager"
           }
         },
-        "output": {
-        }
+        
+  "output": {
+    "count": 1,
+    "entity_type": "users",
+    "results": [
+      {
+        "created_at": "2024-05-01T07:45:00",
+        "email": "lydia.trujillo@gmail.com",
+        "first_name": "Lydia",
+        "last_name": "Trujillo",
+        "role": "fund_manager",
+        "status": "active",
+        "timezone": "Asia/Tokyo",
+        "updated_at": "2024-11-25T06:48:06",
+        "user_id": "21"
+      }
+    ],
+    "success": true
+  }
+
       },
       {
         "name": "find_user_entities",
@@ -29,8 +47,24 @@
             "email": "clinton.hopkins@finance.com"
           }
         },
-        "output": {
-        }
+       "output": {
+    "count": 1,
+    "entity_type": "users",
+    "results": [
+      {
+        "created_at": "2024-02-18T12:24:48",
+        "email": "clinton.hopkins@finance.com",
+        "first_name": "Clinton",
+        "last_name": "Hopkins",
+        "role": "trader",
+        "status": "active",
+        "timezone": "UTC",
+        "updated_at": "2025-01-12T12:29:28",
+        "user_id": "52"
+      }
+    ],
+    "success": true
+  }
       },
       {
         "name": "find_investor_entities",
@@ -41,7 +75,26 @@
           }
         },
         "output": {
-        }
+    "count": 1,
+    "entity_type": "investors",
+    "results": [
+      {
+        "accreditation_status": "accredited",
+        "address": "7848 Taylor Square Apt. 997, Millsside, ME 46005",
+        "contact_email": "martinez6230@finance.com",
+        "country": "United Kingdom",
+        "created_at": "2022-10-10T00:38:07",
+        "date_of_incorporation": "2007-10-06",
+        "investor_id": "137",
+        "name": "Martinez, Rose and Jackson",
+        "registration_number": 712580457,
+        "source_of_funds": "dividend_income",
+        "status": "onboarded",
+        "tax_id": "983-17-4564"
+      }
+    ],
+    "success": true
+  }
       },
       {
         "name": "find_user_entities",
@@ -52,8 +105,23 @@
           }
         },
         "output": {
-         
-        }
+    "count": 1,
+    "entity_type": "users",
+    "results": [
+      {
+        "created_at": "2024-02-18T12:24:48",
+        "email": "clinton.hopkins@finance.com",
+        "first_name": "Clinton",
+        "last_name": "Hopkins",
+        "role": "trader",
+        "status": "active",
+        "timezone": "UTC",
+        "updated_at": "2025-01-12T12:29:28",
+        "user_id": "52"
+      }
+    ],
+    "success": true
+  }
       },
       {
         "name": "validate_approval",
@@ -62,7 +130,9 @@
           "requester_email": "clinton.hopkins@finance.com"
         },
         "output": {
-                  }
+    "approval_valid": true,
+    "approved_by": "compliance_officer"
+  }
       },
       {
         "name": "validate_approval",
@@ -70,9 +140,14 @@
           "action": "subscription_management",
           "requester_email": "clinton.hopkins@finance.com"
         },
-        "output": {
-          
-        }
+       
+  "output": {
+    "approval_valid": true,
+    "approved_by": [
+      "compliance_officer",
+      "fund_manager"
+    ]
+  }
       },
       {
         "name": "find_investment_flow_entities",
@@ -83,9 +158,101 @@
             "status": "approved"
           }
         },
-        "output": {
-          
-        }
+      "output": {
+    "count": 8,
+    "entity_type": "subscriptions",
+    "results": [
+      {
+        "amount": 3937398.04,
+        "approval_date": "2025-08-08",
+        "fund_id": "67",
+        "investor_id": "137",
+        "request_assigned_to": "49",
+        "request_date": "2025-06-28",
+        "status": "approved",
+        "subscription_id": "476",
+        "updated_at": "2025-07-18T11:18:59"
+      },
+      {
+        "amount": 4783109.1,
+        "approval_date": "2025-06-28",
+        "fund_id": "13",
+        "investor_id": "137",
+        "request_assigned_to": "62",
+        "request_date": "2025-06-10",
+        "status": "approved",
+        "subscription_id": "788",
+        "updated_at": "2025-07-18T12:19:05"
+      },
+      {
+        "amount": 1538159.83,
+        "approval_date": "2025-07-16",
+        "fund_id": "21",
+        "investor_id": "137",
+        "request_assigned_to": "61",
+        "request_date": "2025-07-08",
+        "status": "approved",
+        "subscription_id": "1264",
+        "updated_at": "2025-08-03T00:58:59"
+      },
+      {
+        "amount": 1944803.62,
+        "approval_date": "2024-10-06",
+        "fund_id": "65",
+        "investor_id": "137",
+        "request_assigned_to": "49",
+        "request_date": "2023-12-08",
+        "status": "approved",
+        "subscription_id": "1468",
+        "updated_at": "2024-11-18T23:00:20"
+      },
+      {
+        "amount": 266864.98,
+        "approval_date": "2024-03-03",
+        "fund_id": "26",
+        "investor_id": "137",
+        "request_assigned_to": "29",
+        "request_date": "2023-12-30",
+        "status": "approved",
+        "subscription_id": "1643",
+        "updated_at": "2024-04-18T02:11:09"
+      },
+      {
+        "amount": 2351022.34,
+        "approval_date": "2024-10-31",
+        "fund_id": "83",
+        "investor_id": "137",
+        "request_assigned_to": "18",
+        "request_date": "2023-11-10",
+        "status": "approved",
+        "subscription_id": "1755",
+        "updated_at": "2025-02-14T20:16:39"
+      },
+      {
+        "amount": 602777.09,
+        "approval_date": "2025-08-07",
+        "fund_id": "43",
+        "investor_id": "137",
+        "request_assigned_to": "26",
+        "request_date": "2025-07-22",
+        "status": "approved",
+        "subscription_id": "2262",
+        "updated_at": "2025-08-03T17:52:22"
+      },
+      {
+        "amount": 4358055.77,
+        "approval_date": "2025-06-17",
+        "fund_id": "55",
+        "investor_id": "137",
+        "request_assigned_to": "18",
+        "request_date": "2025-05-06",
+        "status": "approved",
+        "subscription_id": "2263",
+        "updated_at": "2025-05-11T07:26:15"
+      }
+    ],
+    "success": true
+  }
       },
       {
         "name": "manipulate_subscription",
@@ -97,9 +264,23 @@
           },
           "subscription_id": "2263"
         },
-        "output": {
-          
-        }
+       "output": {
+    "action": "cancel",
+    "message": "Subscription 2263 cancelled successfully.",
+    "subscription_data": {
+      "amount": 4358055.77,
+      "approval_date": "2025-06-17",
+      "fund_id": "55",
+      "investor_id": "137",
+      "request_assigned_to": "18",
+      "request_date": "2025-05-06",
+      "status": "cancelled",
+      "subscription_id": "2263",
+      "updated_at": "2025-10-01T00:00:00"
+    },
+    "subscription_id": "2263",
+    "success": true
+  }
       },
       {
         "name": "register_new_audit_trail",
@@ -111,9 +292,16 @@
           "reference_id": "2263",
           "reference_type": "subscription"
         },
-        "output": {
-         
-        }
+       "output": {
+    "action": "cancel",
+    "audit_trail_id": "3501",
+    "created_at": "2025-10-01T00:00:00",
+    "field_name": "status",
+    "new_value": "cancelled",
+    "old_value": "approved",
+    "reference_id": "2263",
+    "reference_type": "subscription"
+  }
       },
       {
         "name": "remove_investor",
@@ -123,8 +311,16 @@
           "reason": "fraudulent activities"
         },
         "output": {
-         
-        }
+    "investor_data": {
+      "contact_email": "martinez6230@finance.com",
+      "investor_id": "137",
+      "name": "Martinez, Rose and Jackson",
+      "status": "offboarded"
+    },
+    "investor_id": "137",
+    "message": "Investor 137 successfully offboarded",
+    "success": true
+  }
       },
       {
         "name": "register_new_audit_trail",
@@ -136,12 +332,24 @@
           "reference_id": "137",
           "reference_type": "investor"
         },
-        "output": {
-          
-        }
+       "output": {
+    "action": "update",
+    "audit_trail_id": "3502",
+    "created_at": "2025-10-01T00:00:00",
+    "field_name": "status",
+    "new_value": "offboarded",
+    "old_value": "onboarded",
+    "reference_id": "137",
+    "reference_type": "investor"
+  }
       }
     ],
-    "outputs": [],
+    "outputs": [
+      "2263",
+      "3501",
+      "137",
+      "3502"
+    ],
     "edges": [
       {
         "from": "instruction",
