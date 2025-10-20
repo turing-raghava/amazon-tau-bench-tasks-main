@@ -1,0 +1,82 @@
+name: Validate PR Branch and Title Match Folder Name
+
+on:
+  pull_request:
+    types: [opened, labeled, unlabeled, synchronize, reopened, ready_for_review]
+    branches:
+      - main
+      - automate_action_check
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  check-folder-name:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Get changed files
+        id: changed-files
+        uses: tj-actions/changed-files@ed68ef82c095e0d48ec87eccea555d944a631a4c # v46.0.1
+
+      - name: Extract folder name from file path
+        id: extract
+        run: |
+          files="${{ steps.changed-files.outputs.all_changed_files }}"
+          IFS=',' read -ra FILES <<< "$files"
+
+          if [[ ${#FILES[@]} -ne 2 ]]; then
+            echo "Only two files should be changed."
+            exit 1
+          fi
+
+          echo "Changed files: ${FILES[*]}"
+
+          # Extract folder names from both files (3rd level) and ensure they're consistent
+          FOLDER_NAME_1=$(echo "${FILES[0]}" | cut -d'/' -f3)
+          FOLDER_NAME_2=$(echo "${FILES[1]}" | cut -d'/' -f3)
+
+          echo "Task folder from file 1: $FOLDER_NAME_1"
+          echo "Task folder from file 2: $FOLDER_NAME_2"
+
+          if [[ "$FOLDER_NAME_1" != "$FOLDER_NAME_2" ]]; then
+            echo "Both files must be in the same task folder! Found: $FOLDER_NAME_1 and $FOLDER_NAME_2"
+            exit 1
+          fi
+
+          FOLDER_NAME="$FOLDER_NAME_1"
+          echo "Extracted folder name: $FOLDER_NAME"
+          echo "folder_name=$FOLDER_NAME" >> $GITHUB_OUTPUT
+
+      - name: Validate branch name matches folder name
+        run: |
+          BRANCH_NAME="${{ github.head_ref }}"
+          FOLDER_NAME="${{ steps.extract.outputs.folder_name }}"
+
+          echo "Branch name: $BRANCH_NAME"
+          echo "Folder name: $FOLDER_NAME"
+
+          if [[ "$BRANCH_NAME" != "$FOLDER_NAME" ]]; then
+            echo "Branch name does not match folder name!"
+            exit 1
+          fi
+
+          echo "Branch name matches folder name."
+
+      - name: Validate PR title matches folder name
+        run: |
+          PR_TITLE="${{ github.event.pull_request.title }}"
+          FOLDER_NAME="${{ steps.extract.outputs.folder_name }}"
+
+          echo "PR title: $PR_TITLE"
+          echo "Folder name: $FOLDER_NAME"
+
+          if [[ "$PR_TITLE" != "$FOLDER_NAME" ]]; then
+            echo "PR title does not match folder name!"
+            exit 1
+          fi
+
+          echo "PR title matches folder name."

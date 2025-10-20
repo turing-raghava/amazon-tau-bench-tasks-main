@@ -1,0 +1,59 @@
+name: Validate Week Folder
+
+on:
+  pull_request:
+    types: [opened, labeled, unlabeled, synchronize, reopened, ready_for_review]
+    branches:
+      - main
+      - automate_action_check
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  validate-week:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Get changed files
+        id: changed-files
+        uses: tj-actions/changed-files@ed68ef82c095e0d48ec87eccea555d944a631a4c
+
+      - name: Validate week folder for all changed files
+        run: |
+          FILES="${{ steps.changed-files.outputs.all_changed_files }}"
+          IFS=',' read -ra FILE_ARRAY <<< "$FILES"
+
+          echo "Checking ${#FILE_ARRAY[@]} changed file(s)..."
+
+          # Find the highest week number from existing week folders
+          HIGHEST_WEEK=0
+          for dir in week_*; do
+            if [[ -d "$dir" && "$dir" =~ week_([0-9]+) ]]; then
+              WEEK_NUM=${BASH_REMATCH[1]}
+              if (( WEEK_NUM > HIGHEST_WEEK )); then
+                HIGHEST_WEEK=$WEEK_NUM
+              fi
+            fi
+          done
+
+          EXPECTED_FOLDER="week_${HIGHEST_WEEK}"
+          echo "Found highest week number: $HIGHEST_WEEK"
+          echo "Expected folder: $EXPECTED_FOLDER"
+
+          for FILE in "${FILE_ARRAY[@]}"; do
+            ACTUAL_FOLDER=$(echo "$FILE" | cut -d'/' -f1)
+
+            echo "File: $FILE"
+            echo "   ↪ Folder: $ACTUAL_FOLDER"
+
+            if [[ "$ACTUAL_FOLDER" != "$EXPECTED_FOLDER" ]]; then
+              echo "File '$FILE' is in wrong week folder '$ACTUAL_FOLDER'. Expected: '$EXPECTED_FOLDER'"
+              exit 1
+            fi
+          done
+
+          echo "All files are in the correct folder: $EXPECTED_FOLDER"
