@@ -7,6 +7,7 @@
   "interface_num": 3,
   "task": {
     "user_id": "21",
+    #The lines "Before executing any irreversible..." to end should not be there, it is kinda spoon feeding. The steps are already defined in policy, so we should not tell it how to proceed.
     "instruction": "You are Lydia Trujillo (lydia.trujillo@gmail.com), a fund manager. You initiate the formal offboarding of the investor “Martinez, Rose and Jackson” on the basis of substantiated fraudulent conduct. Before executing any irreversible steps, determine authorization using the validate_approval action and proceed only if authorization is confirmed. If authorized, cancel all active subscriptions for this investor and record each operation in the audit trail for compliance.",
     "actions": [
       {
@@ -41,6 +42,7 @@
       },
       {
         "name": "find_user_entities",
+        #Why do we need this action? The user email is not mentioned in the instruction too. Please remove this. 
         "arguments": {
           "entity_type": "users",
           "filters": {
@@ -98,6 +100,7 @@
       },
       {
         "name": "find_user_entities",
+        #Same here, it is duplicate and not needed this action too. 
         "arguments": {
           "entity_type": "users",
           "filters": {
@@ -127,6 +130,8 @@
         "name": "validate_approval",
         "arguments": {
           "action": "investor_offboarding",
+          #here requester's email will be of lydia.trujillo@gmail.com, the user on behalf of whom the model is working. 
+          
           "requester_email": "clinton.hopkins@finance.com"
         },
         "output": {
@@ -136,6 +141,7 @@
       },
       {
         "name": "validate_approval",
+        #We do not need this , only investor_offboarding action type is fine in this case. Also email id is wrong 
         "arguments": {
           "action": "subscription_management",
           "requester_email": "clinton.hopkins@finance.com"
@@ -255,6 +261,11 @@
   }
       },
       {
+        #In find_investment_flow_entities we can see from the output, there are many active subscriptions. If you want to proceed with this 
+      #investor, then you need to cancel all it's subscriptions not only one. 
+      #Now, if you follow this, you will just create multiple manipulate_subscription calls which is not good for this task and not helpful in edge creation, 
+      #because you are allowed to create edge for one action with same name even if it is present 100 times. 
+      #I will suggest you to find such investor who has 1-2 active subscriptions. 
         "name": "manipulate_subscription",
         "arguments": {
           "action": "cancel",
@@ -375,6 +386,8 @@
           "input": "action, requester_email"
         }
       },
+      #I see after validate_approval, there is find_investment_flow_entities which is missing here. 
+      #Also, missing edges for manipulate_subscription
       {
         "from": "instruction",
         "to": "remove_investor",
@@ -423,6 +436,7 @@
           "input": "filters.investor_id "
         }
       },
+      #These should be above like I mentioned. 
       {
         "from": "instruction",
         "to": "find_investment_flow_entities",
